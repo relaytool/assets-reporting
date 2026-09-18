@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Number PDF Generator</title>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="generatePDF()">
+        Generate PDF
+    </button>
+
+    <script>
+
+        function generatePDF() {
+
+            const { jsPDF } = window.jspdf;
+
+            // --------------------------------
+            // PAGE SIZE
+            // --------------------------------
+            // 4 x 6 inches
+            // Portrait
+            //
+            // jsPDF unit is inches here
+            // --------------------------------
+
+            const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "in",
+                format: [4, 6]
+            });
+
+
+            // --------------------------------
+            // PAGE DIMENSIONS
+            // --------------------------------
+
+            const pageWidth = 4;
+            const pageHeight = 6;
+
+
+            // --------------------------------
+            // TABLE
+            // --------------------------------
+
+            const columns = 2;
+            const rows = 3;
+
+            const cellWidth = pageWidth / columns;
+            const cellHeight = pageHeight / rows;
+
+
+            // --------------------------------
+            // NUMBER SETTINGS
+            // --------------------------------
+
+            const totalNumbers = 60;
+            const numbersPerPage = columns * rows;
+
+
+            // --------------------------------
+            // DRAW EACH PAGE
+            // --------------------------------
+
+            for (
+                let number = 1;
+                number <= totalNumbers;
+                number += numbersPerPage
+            ) {
+
+                // Draw numbers for this page
+                for (let i = 0; i < numbersPerPage; i++) {
+
+                    const currentNumber = number + i;
+
+                    if (currentNumber > totalNumbers) {
+                        break;
+                    }
+
+
+                    // ----------------------------
+                    // Row and column
+                    // ----------------------------
+
+                    const row = Math.floor(i / columns);
+                    const col = i % columns;
+
+
+                    // ----------------------------
+                    // Cell position
+                    // ----------------------------
+
+                    const x = col * cellWidth;
+                    const y = row * cellHeight;
+
+
+                    // ----------------------------
+                    // Draw cell border
+                    // ----------------------------
+
+                    pdf.rect(
+                        x,
+                        y,
+                        cellWidth,
+                        cellHeight
+                    );
+
+
+                    // ----------------------------
+                    // Format number
+                    // ----------------------------
+
+                    const formattedNumber =
+                        String(currentNumber).padStart(2, "0");
+
+
+                    // ----------------------------
+                    // Number styling
+                    // ----------------------------
+
+                    pdf.setFont("helvetica", "bold");
+                    pdf.setFontSize(40);
+
+                    pdf.setTextColor(0, 0, 0);
+
+
+                    // ----------------------------
+                    // Centre number in cell
+                    // ----------------------------
+
+                    const centerX = x + (cellWidth / 2);
+                    const centerY = y + (cellHeight / 2);
+
+                    pdf.text(
+                        formattedNumber,
+                        centerX,
+                        centerY,
+                        {
+                            align: "center",
+                            baseline: "middle"
+                        }
+                    );
+                }
+
+
+                // --------------------------------
+                // Add next page
+                // --------------------------------
+
+                if (number + numbersPerPage <= totalNumbers) {
+                    pdf.addPage([4, 6], "portrait");
+                }
+            }
+
+
+            // --------------------------------
+            // SAVE PDF
+            // --------------------------------
+
+            pdf.save("numbers_01_to_60.pdf");
+        }
+
+    </script>
+
+</body>
+</html>
