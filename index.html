@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UB11 Schedule Planner</title>
+<style>
+:root{--bg:#f4f6f8;--panel:#fff;--text:#16202a;--muted:#6b7785;--line:#dfe4ea;--accent:#1f6feb;--in:#0f8a6a;--out:#c2410c;--ic:#6d28d9;--warn:#b45309;--danger:#b42318;--shadow:0 8px 28px rgba(20,36,54,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{max-width:1500px;margin:0 auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.brand h1{margin:0;font-size:24px}.brand p{margin:4px 0 0;color:var(--muted);font-size:13px}.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;padding:9px 12px;border-radius:10px;color:var(--text);font-weight:650}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.ghost{background:transparent}.btn.small{padding:6px 9px;font-size:12px}.status{font-size:12px;color:var(--muted);padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.toolbar{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow)}.seg{display:flex;background:#eef2f6;border-radius:10px;padding:3px}.seg button{border:0;background:transparent;padding:8px 12px;border-radius:8px;color:#5c6876;font-weight:700}.seg button.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}.field{display:flex;gap:6px;align-items:center}.field label{font-size:12px;color:var(--muted)}.field input,.field select,.modal input,.modal select,.modal textarea{border:1px solid var(--line);border-radius:9px;padding:8px 9px;background:#fff;min-width:130px}.spacer{flex:1}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}.kpi .label{font-size:12px;color:var(--muted)}.kpi .value{font-size:24px;font-weight:800;margin-top:4px}.kpi .sub{font-size:11px;color:var(--muted);margin-top:3px}
+.main{min-height:520px}.day-shell{display:grid;grid-template-columns:84px minmax(0,1fr);background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}.timeline{border-right:1px solid var(--line);background:#fafbfc}.hour{height:60px;border-bottom:1px dashed var(--line);font-size:11px;color:var(--muted);padding:8px;text-align:right}.slots{position:relative;min-height:720px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 59px,#eef1f4 60px)}.slot-head{position:absolute;left:0;right:0;height:1px;background:var(--line)}.cards{padding:8px;display:flex;flex-direction:column;gap:8px;position:relative}
+.delivery{border:1px solid var(--line);border-left:5px solid #adb5bd;border-radius:12px;background:#fff;padding:11px;box-shadow:0 2px 10px rgba(17,24,39,.04)}.delivery.inbound{border-left-color:var(--in)}.delivery.outbound{border-left-color:var(--out)}.delivery.intercity{border-left-color:var(--ic)}.d-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.badge{font-size:10px;font-weight:800;letter-spacing:.04em;padding:4px 7px;border-radius:999px;background:#eef1f4;color:#52606e}.badge.inbound{background:#e8f7f1;color:#0b755a}.badge.outbound{background:#fff0e8;color:#a13b0a}.badge.intercity{background:#f0eaff;color:#5b22bb}.route{font-size:15px;font-weight:800;line-height:1.2}.time{margin-left:auto;font-weight:800;font-size:14px}.d-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:9px}.kv{background:#f8fafb;border-radius:9px;padding:7px}.kv small{display:block;color:var(--muted);font-size:10px}.kv strong{display:block;font-size:12px;margin-top:2px;overflow-wrap:anywhere}.notes{margin-top:8px;color:#566271;font-size:11px}
+.empty{padding:42px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:14px}.loading{padding:42px;text-align:center;color:var(--muted)}
+.calendar{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}.cal-title{padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}.cal-title h2{margin:0;font-size:18px}.week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.weekday{padding:9px 10px;font-size:11px;font-weight:800;color:var(--muted);background:#fafbfc;border-bottom:1px solid var(--line)}.day-cell{min-height:125px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px;position:relative}.day-cell:nth-child(7n){border-right:0}.day-num{font-weight:800;font-size:12px}.outside{opacity:.35}.day-count{margin-top:7px;font-size:11px;color:var(--muted)}.pills{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}.pill{font-size:10px;border-radius:999px;padding:3px 6px;background:#eef1f4;color:#52606e}.pill.plan{background:#e8f0ff;color:#1f5cb4}.pill.audit{background:#fff5d9;color:#9a6900}.cell-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.year-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.month-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:var(--shadow)}.month-card h3{margin:0 0 10px;font-size:14px}.mbar{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:4px 0}.mbar b{color:var(--text)}
+.footer{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.footer-link{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}.footer-link strong{font-size:13px}.footer-link span{font-size:12px;color:var(--muted)}
+.modal-back{position:fixed;inset:0;background:rgba(10,18,26,.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal-back.open{display:flex}.modal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:0 24px 80px rgba(0,0,0,.22)}.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--line)}.modal-head h3{margin:0}.modal-body{padding:16px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.form-row{display:flex;flex-direction:column;gap:5px}.form-row.full{grid-column:1/-1}.form-row label{font-size:11px;font-weight:750;color:var(--muted)}.modal-foot{padding:14px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}.table{width:100%;border-collapse:collapse;font-size:12px}.table th,.table td{padding:8px 9px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.table th{background:#fafbfc;color:var(--muted);font-size:10px}.table tr:last-child td{border-bottom:0}.ok{color:var(--in)}.bad{color:var(--danger)}.warn{color:var(--warn)}.report{display:grid;gap:10px}.report-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.report-card{border:1px solid var(--line);border-radius:10px;padding:10px}.report-card small{color:var(--muted);display:block;font-size:10px}.report-card b{font-size:20px}.hint{font-size:11px;color:var(--muted);margin-top:6px}.toast{position:fixed;right:18px;bottom:18px;max-width:360px;background:#16202a;color:#fff;padding:11px 13px;border-radius:10px;display:none;z-index:30;font-size:12px}.toast.show{display:block}
+@media(max-width:1050px){.d-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.year-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:760px){.app{padding:10px}.top{align-items:flex-start;flex-direction:column}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.footer{grid-template-columns:1fr}.week-grid{grid-template-columns:repeat(1,minmax(0,1fr))}.weekday{display:none}.day-cell{min-height:110px;border-right:0}.year-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.form-grid{grid-template-columns:1fr}.form-row.full{grid-column:auto}.d-grid{grid-template-columns:1fr}.time{margin-left:0}.toolbar{align-items:stretch}.spacer{display:none}}
+</style>
+</head>
+<body>
+<div class="app" id="plannerApp">
+  <header class="top">
+    <div class="brand">
+      <h1>UB11 Schedule Planner</h1>
+      <p>FM deliveries • intercity movements • shift planning • inventory routines</p>
+    </div>
+    <div class="top-actions">
+      <span class="status" id="syncStatus">Not connected</span>
+      <button class="btn primary" id="connectBtn">Connect Google Drive</button>
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <div class="seg" id="viewSeg">
+      <button data-view="year">Year</button><button data-view="month">Month</button><button data-view="week">Week</button><button data-view="day" class="active">Day</button>
+    </div>
+    <button class="btn small" id="prevBtn">‹</button><button class="btn small" id="todayBtn">Today</button><button class="btn small" id="nextBtn">›</button>
+    <div class="field"><label>Date</label><input id="datePicker" type="date"></div>
+    <div class="field"><label>Shift</label><select id="shiftSelect"><option value="all">All</option><option value="day">07:00–19:00</option><option value="night">19:00–07:00</option></select></div>
+    <div class="field"><label>Sort</label><select id="sortSelect"><option value="effective">Movement time</option><option value="client">Client</option><option value="type">Route type</option><option value="vehicle">Vehicle</option><option value="status">Status</option></select></div>
+    <div class="field"><label>Filter</label><select id="typeFilter"><option value="all">All movements</option><option value="inbound">Inbound</option><option value="outbound">Outbound</option><option value="intercity">Intercity</option></select></div>
+    <div class="spacer"></div>
+    <button class="btn small" id="refreshBtn">Refresh data</button>
+  </section>
+
+  <section class="kpis" id="kpis"></section>
+  <main class="main" id="main"></main>
+
+  <section class="footer">
+    <div class="footer-link" id="endShiftLink"><div><strong>End shift routine</strong><span>Snapshot warehouse + client movements for the selected shift</span></div><b>→</b></div>
+    <div class="footer-link" id="eodLink"><div><strong>EOD report</strong><span>Review today's received, sent and exceptions data</span></div><b>→</b></div>
+  </section>
+</div>
+
+<div class="modal-back" id="modalBack"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+<script src="./config.js"></script>
+<script src="./planner-dashboard.js"></script>
+</body>
+</html>
